@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class University(models.Model):
@@ -19,3 +20,14 @@ class Event(models.Model):
     def __str__(self):
         uni = getattr(self.university, "name", "")
         return f"{self.title} @ {uni}" if uni else self.titl
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    event = models.ForeignKey('Event', on_delete=models.CASCADE, related_name='favorites')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'event') 
+
+    def __str__(self):
+        return f"Fav: {self.event_id} by {self.user_id or 'anon'}"
