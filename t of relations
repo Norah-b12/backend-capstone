@@ -1,0 +1,18 @@
+                  List of relations
+ Schema |            Name            | Type  | Owner 
+--------+----------------------------+-------+-------
+ public | auth_group                 | table | norah
+ public | auth_group_permissions     | table | norah
+ public | auth_permission            | table | norah
+ public | auth_user                  | table | norah
+ public | auth_user_groups           | table | norah
+ public | auth_user_user_permissions | table | norah
+ public | django_admin_log           | table | norah
+ public | django_content_type        | table | norah
+ public | django_migrations          | table | norah
+ public | django_session             | table | norah
+ public | main_app_event             | table | norah
+ public | main_app_favorite          | table | norah
+ public | main_app_university        | table | norah
+(13 rows)
+

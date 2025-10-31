@@ -1,14 +1,38 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import permissions
 from django.db.models import Q
 from .models import Event, University,Favorite
 from .serializers import EventSerializer, UniversitySerializer
 from django.shortcuts import get_object_or_404
 from .serializers import FavoriteSerializer
 
+from rest_framework import generics, permissions, status
+from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import UserSerializer
+from django.contrib.auth.models import User
+
+class CreateUserView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.AllowAny]   
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        refresh = RefreshToken.for_user(user)
+        data = {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+            "user": UserSerializer(user).data,
+        }
+        return Response(data, status=status.HTTP_201_CREATED)
+
+
+
 class Home(APIView):
+    
     def get(self, request):
         content = {'message': 'Welcome to capstone project'}
         return Response(content)

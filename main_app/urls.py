@@ -10,4 +10,7 @@ urlpatterns = [
     path('favorites/by-event/<int:event_id>/', FavoriteByEvent.as_view(), name='favorite-by-event'),
 
 
-]
+    path('auth/signup/', CreateUserView.as_view(), name='signup'),  # <-- هذا ال
+
+
+  ]
