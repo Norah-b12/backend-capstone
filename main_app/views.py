@@ -3,8 +3,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
 from django.db.models import Q
-from .models import Event, University
+from .models import Event, University,Favorite
 from .serializers import EventSerializer, UniversitySerializer
+from django.shortcuts import get_object_or_404
+from .serializers import FavoriteSerializer
 
 class Home(APIView):
     def get(self, request):
@@ -87,6 +89,37 @@ class EventDetail(APIView):
             return Response({'detail': 'Not found.'}, status=404)
         ev.delete()
         return Response({"success": True}, status=200)
+
+class FavoriteIndex(APIView):
+    def get(self, request):
+        user = request.user if request.user.is_authenticated else None
+        qs = Favorite.objects.filter(user=user).order_by('-created_at')
+        return Response(FavoriteSerializer(qs, many=True).data, status=200)
+
+    def post(self, request):
+        event_id = request.data.get('event')
+        if not event_id:
+            return Response({'detail': 'event is required'}, status=400)
+
+        event = get_object_or_404(Event, id=event_id)
+        user = request.user if request.user.is_authenticated else None
+        fav, created = Favorite.objects.get_or_create(user=user, event=event)
+        return Response(FavoriteSerializer(fav).data, status=201 if created else 200)
+
+
+
+
+class FavoriteDetail(APIView):
+    def delete(self, request, fav_id):
+        fav = get_object_or_404(Favorite, id=fav_id)
+        fav.delete()
+        return Response(status=204)
+
+class FavoriteByEvent(APIView):
+    def delete(self, request, event_id):
+        Favorite.objects.filter(event_id=event_id).delete()
+        return Response(status=204)
+
 
 
 
