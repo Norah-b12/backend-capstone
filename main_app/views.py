@@ -6,7 +6,7 @@ from .models import Event, University,Favorite
 from .serializers import EventSerializer, UniversitySerializer
 from django.shortcuts import get_object_or_404
 from .serializers import FavoriteSerializer
-
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics, permissions, status
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import UserSerializer
@@ -30,7 +30,11 @@ class CreateUserView(generics.CreateAPIView):
         return Response(data, status=status.HTTP_201_CREATED)
 
 
+class WhoAmI(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request):
+        return Response(UserSerializer(request.user).data)
 class Home(APIView):
     
     def get(self, request):
