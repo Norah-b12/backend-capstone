@@ -9,7 +9,6 @@ def _is_organizer(user):
 
 
 class IsOrganizerOrReadOnly(BasePermission):
- 
     def has_permission(self, request, view):
         if request.method in SAFE_METHODS:
             return True
@@ -17,7 +16,6 @@ class IsOrganizerOrReadOnly(BasePermission):
 
 
 class IsOrganizerForEventOrReadOnly(BasePermission):
-  
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
             return True
